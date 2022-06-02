@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useContext } from "react";
 import axios from "axios";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { AuthContext } from "../../context/AuthState/AuthContext";
 import { createConversationCall } from "../../context/UserState/apiCalls";
 import { UserContext } from "../../context/UserState/UserContext";
@@ -37,55 +38,37 @@ export default function Topbar() {
 
   return (
     <div className="topbarContainer">
-      <div className="topbarLeft">
-        <Link to="/" style={{ textDecoration: "none" }}>
-          <span className="logo">Lamasocial</span>
-        </Link>
-      </div>
-      <div className="topbarCenter">
-        <div className="searchbar">
-          <Search className="searchIcon" />
-          <form onSubmit={handleSubmit}>
-            <input
-              placeholder="User search"
-              className="searchInput"
-              type="text"
-              value={usernameSearched}
-              onChange={handleChange}
-            />
-          </form>
-        </div>
+      <div className="searchbar">
+        <Search className="searchIcon" />
+        <form onSubmit={handleSubmit}>
+          <input
+            placeholder="User search"
+            className="searchInput"
+            type="text"
+            value={usernameSearched}
+            onChange={handleChange}
+          />
+        </form>
       </div>
       <div className="topbarRight">
-        <div className="topbarLinks">
-          <span className="topbarLink">Homepage</span>
-          <span className="topbarLink">Timeline</span>
-        </div>
         <div className="topbarIcons">
-          <div className="topbarIconItem">
-            <Person />
-            <span className="topbarIconBadge">1</span>
+          <div className="imgAndUsername" to={`/profile/${user.username}`}>
+            <img
+              src={
+                user.profilePicture
+                  ? PF + user.profilePicture
+                  : PF + "person/noAvatar.png"
+              }
+              alt=""
+              className="topbarImg"
+            />
+            <typography className="username">{user.username}</typography>
           </div>
           <div className="topbarIconItem">
-            <Chat />
-            <span className="topbarIconBadge">2</span>
-          </div>
-          <div className="topbarIconItem">
-            <Notifications />
+            <FontAwesomeIcon icon="fa-solid fa-bell" />
             <span className="topbarIconBadge">1</span>
           </div>
         </div>
-        <Link to={`/profile/${user.username}`}>
-          <img
-            src={
-              user.profilePicture
-                ? PF + user.profilePicture
-                : PF + "person/noAvatar.png"
-            }
-            alt=""
-            className="topbarImg"
-          />
-        </Link>
       </div>
     </div>
   );
