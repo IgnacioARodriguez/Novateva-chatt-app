@@ -1,5 +1,6 @@
 import "./topbar.css";
 import { Search, Person, Chat, Notifications } from "@material-ui/icons";
+import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useContext } from "react";
@@ -55,9 +56,10 @@ export default function Topbar() {
           <div className="imgAndUsername" to={`/profile/${user.username}`}>
             <img
               src={
-                user.profilePicture
-                  ? PF + user.profilePicture
-                  : PF + "person/noAvatar.png"
+                // user.profilePicture
+                //   ? PF + user.profilePicture
+                //   : PF + "person/noAvatar.png"
+                "https://images.pexels.com/photos/3686769/pexels-photo-3686769.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500"
               }
               alt=""
               className="topbarImg"
@@ -65,7 +67,13 @@ export default function Topbar() {
             <typography className="username">{user.username}</typography>
           </div>
           <div className="topbarIconItem">
-            <FontAwesomeIcon icon="fa-solid fa-bell" />
+            <NotificationsNoneIcon
+              style={{
+                color: "#858585",
+                strokeWidth: "0.01",
+                stroke: "#858585",
+              }}
+            />
             <span className="topbarIconBadge">1</span>
           </div>
         </div>

@@ -1,0 +1,57 @@
+.sideBarContainer {
+  display: flex;
+  border: solid 2px #f0f0f0;
+  border-top: none;
+  width: 290px;
+  background-color: #ffffff;
+}
+
+.chatContainer {
+  display: flex;
+  margin-top: 39px;
+  background: linear-gradient(178.18deg, #fd749b -13.56%, #281ac8 158.3%);
+  height: 43.94px;
+  width: 273px;
+  border-top-right-radius: 50px;
+  border-bottom-right-radius: 50px;
+  align-items: center;
+  color: white;
+}
+
+.chatText {
+  font-family: Poppins;
+  font-size: 12px;
+  font-weight: 200;
+  line-height: 18px;
+  letter-spacing: 0em;
+  text-align: left;
+}
+
+.messageCountContainer {
+  height: 16.27450942993164px;
+  width: 21px;
+  background-color: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  margin-left: 108px;
+}
+
+.messageCount {
+  font-family: "Poppins";
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: -0.428571492433548px;
+  background: linear-gradient(178.18deg, #fd749b -13.56%, #281ac8 158.3%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.questionIcon {
+  margin-left: 57px;
+  margin-right: 15px;
+  width: 13px;
+  height: 8px;
+}

@@ -8,6 +8,8 @@ import { AuthContext } from "../../context/AuthState/AuthContext";
 import axios from "axios";
 import { io } from "socket.io-client";
 import { UserContext } from "../../context/UserState/UserContext";
+import Sidebar from "../../components/sidebar/sidebar";
+import ContactsBar from "../../components/contactsBar/ContactsBar";
 
 export default function Messenger() {
   const [conversations, setConversations] = useState([]);
@@ -128,6 +130,8 @@ export default function Messenger() {
     <>
       <Topbar />
       <div className="messenger">
+        <Sidebar className="sideBar" />
+        <ContactsBar />
         <div className="chatMenu">
           <div className="chatMenuWrapper">
             <input placeholder="Search for friends" className="chatMenuInput" />
@@ -150,16 +154,23 @@ export default function Messenger() {
                   ))}
                 </div>
                 <div className="chatBoxBottom">
-                  <textarea
-                    className="chatMessageInput"
-                    placeholder="write something..."
-                    onChange={(e) => setNewMessage(e.target.value)}
-                    value={newMessage}
-                    onSubmit={handleSubmit}
-                  ></textarea>
-                  <button className="chatSubmitButton" onClick={handleSubmit}>
-                    Send
-                  </button>
+                  <form>
+                    <div className="messengerInputContainer">
+                      <input
+                        className="chatMessageInput"
+                        // placeholder="write something..."
+                        onChange={(e) => setNewMessage(e.target.value)}
+                        value={newMessage}
+                        onSubmit={handleSubmit}
+                      />
+                      <button
+                        className="chatSubmitButton"
+                        onClick={handleSubmit}
+                      >
+                        Send
+                      </button>
+                    </div>
+                  </form>
                 </div>
               </>
             ) : (
@@ -167,15 +178,6 @@ export default function Messenger() {
                 Open a conversation to start a chat.
               </span>
             )}
-          </div>
-        </div>
-        <div className="chatOnline">
-          <div className="chatOnlineWrapper">
-            <ChatOnline
-              onlineUsers={onlineUsers}
-              currentId={user._id}
-              setCurrentChat={setCurrentChat}
-            />
           </div>
         </div>
       </div>
