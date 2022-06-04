@@ -21,18 +21,22 @@ export default function Conversation({ conversation, currentUser }) {
   }, [currentUser, conversation]);
 
   return (
-    <div className="conversation">
+    <div className="imgAndUsernameContacts">
       <img
-        className="conversationImg"
         src={
-          // user?.profilePicture
+          // user.profilePicture
           //   ? PF + user.profilePicture
           //   : PF + "person/noAvatar.png"
           "https://images.pexels.com/photos/3686769/pexels-photo-3686769.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500"
         }
         alt=""
+        className="topbarImg"
       />
-      <span className="conversationName">{user?.username}</span>
+      <div className="connectedBadge"></div>
+      <div className="nameAndStatus">
+        <typography className="usernameContacts">{user?.username}</typography>
+        <typography className="status">Online</typography>
+      </div>
     </div>
   );
 }

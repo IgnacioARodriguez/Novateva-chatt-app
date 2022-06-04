@@ -131,15 +131,34 @@ export default function Messenger() {
       <Topbar />
       <div className="messenger">
         <Sidebar className="sideBar" />
-        <ContactsBar />
-        <div className="chatMenu">
-          <div className="chatMenuWrapper">
-            <input placeholder="Search for friends" className="chatMenuInput" />
-            {conversations.map((c) => (
-              <div onClick={() => setCurrentChat(c)}>
-                <Conversation conversation={c} currentUser={user} />
-              </div>
-            ))}
+        <div className="ContactsChatContainer">
+          <div className="imgAndUsernamePersonal">
+            <img
+              src={
+                // user.profilePicture
+                //   ? PF + user.profilePicture
+                //   : PF + "person/noAvatar.png"
+                "https://images.pexels.com/photos/3686769/pexels-photo-3686769.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500"
+              }
+              alt=""
+              className="topbarImg"
+            />
+            <div className="connectedBadgePersonal"></div>
+            <div className="nameAndStatusPersonal">
+              <typography className="usernamePersonal">
+                {user.username}
+              </typography>
+              <typography className="statusPersonal">Online</typography>
+            </div>
+          </div>
+          <div className="chatMenu">
+            <div className="chatMenuWrapper">
+              {conversations.map((c) => (
+                <div onClick={() => setCurrentChat(c)}>
+                  <Conversation conversation={c} currentUser={user} />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
         <div className="chatBox">

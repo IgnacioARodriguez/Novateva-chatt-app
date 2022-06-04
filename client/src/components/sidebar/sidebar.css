@@ -3,7 +3,9 @@
   border: solid 2px #f0f0f0;
   border-top: none;
   width: 290px;
+  flex-direction: column;
   background-color: #ffffff;
+  height: 854px;
 }
 
 .chatContainer {
@@ -16,6 +18,30 @@
   border-bottom-right-radius: 50px;
   align-items: center;
   color: white;
+}
+
+.logoutContainer {
+  margin-top: 710px;
+  margin-left: 54px;
+  display: flex;
+  align-items: center;
+  width: 80px;
+}
+
+.logoutContainer:hover {
+  cursor: pointer;
+}
+
+.logoutButon {
+  background-color: transparent;
+  border: none;
+  font-weight: 400;
+  color: #858585;
+  font-size: 12px;
+}
+
+.logoutButon:hover {
+  cursor: pointer;
 }
 
 .chatText {

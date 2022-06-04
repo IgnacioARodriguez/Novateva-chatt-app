@@ -24,7 +24,7 @@ export default function ContactsBar() {
       }
     };
     getConversations();
-    setCurrentChat(conversation);
+    // setCurrentChat(conversation);
   }, [user._id, conversation]);
 
   return (
