@@ -63,7 +63,7 @@
   margin-top: -5px;
   font-family: "Poppins";
   font-style: normal;
-  font-weight: 200;
+  font-weight: 700;
   font-size: 12px;
   line-height: 24px;
 
@@ -73,11 +73,12 @@
 .chatBox {
   flex: 5.5;
   width: 874px;
-  border: solid 2px #7c3232;
+  border-left: solid 2px #f0f0f0;
 }
 
 .ContactsChatContainer {
   width: 301px;
+  border-top-left-radius: 10px;
 }
 
 .chatBoxWrapper {
@@ -96,7 +97,30 @@
 .chatBoxBottom {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+}
+
+.chatMessageInput {
+  border: none;
+  outline: none;
+  width: 800px;
+  height: 50px;
+}
+
+.chatMessageInput::placeholder {
+  width: 172px;
+  height: 25px;
+
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 22px;
+
+  letter-spacing: 0.4375px;
+
+  color: #bfbfbf;
+  margin-left: 10px;
 }
 
 .sideBar {
@@ -104,21 +128,15 @@
   border: solid 2px red;
 }
 
-.chatMessageInput {
-  width: 788px;
-  height: 54px;
-  border-radius: 100px;
-  /* border: 1px solid #f0f0f0; */
-  display: flex;
-}
-
 .messengerInputContainer {
   display: flex;
+  border: solid 1px #f0f0f0;
   width: 788px;
-  height: 54px;
-
-  border: 1px solid #6c1111;
   border-radius: 100px;
+  justify-content: space-between;
+  align-items: center;
+  height: 54px;
+  margin-top: 50px;
 }
 
 .chatSubmitButton {
@@ -127,8 +145,12 @@
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  margin-right: 14px;
   background-color: teal;
+  width: 84px;
   color: white;
+  background: linear-gradient(178.18deg, #fd749b -13.56%, #281ac8 158.3%);
+  border-radius: 100px;
 }
 
 .chatOnline {

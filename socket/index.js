@@ -43,6 +43,14 @@ io.on("connection", (socket) => {
     // });
     // console.log(usersOnlineStatus);
     io.emit("getUsers", users);
+    socket.on("typing", (user) => {
+      if (user != undefined) {
+        io.emit("someoneTyping", user);
+      }
+    });
+    socket.on("notTyping", () => {
+      io.emit("someoneLetTyping");
+    });
   });
 
   //send and get message

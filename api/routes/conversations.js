@@ -18,7 +18,6 @@ router.post("/", async (req, res) => {
     );
     console.log(conversationExists.data);
     if (conversationExists !== null) {
-      console.log("hola");
       const savedConversation = await newConversation.save();
       res.status(200).json(savedConversation);
     } else {

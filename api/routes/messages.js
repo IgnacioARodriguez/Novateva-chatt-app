@@ -27,4 +27,16 @@ router.get("/:conversationId", async (req, res) => {
   }
 });
 
+router.get("/noRead/:userId", async (req, res) => {
+  try {
+    const messages = await Message.find({
+      read: false,
+      receiver: req.params.userId,
+    });
+    res.status(200).json(messages);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
 module.exports = router;

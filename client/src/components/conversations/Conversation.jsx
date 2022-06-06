@@ -1,9 +1,14 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
+import { io } from "socket.io-client";
+import { TypingContext } from "../../context/TypingContext/TypingContext";
 import "./conversation.css";
 
 export default function Conversation({ conversation, currentUser }) {
   const [user, setUser] = useState(null);
+  const [unreadMessages, setUnreadMessages] = useState([]);
+  const { typing } = useContext(TypingContext);
+  const socket = useRef();
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
 
   useEffect(() => {
@@ -18,7 +23,21 @@ export default function Conversation({ conversation, currentUser }) {
       }
     };
     getUser();
-  }, [currentUser, conversation]);
+  }, [currentUser, conversation, typing]);
+
+  useEffect(() => {
+    socket.current = io("ws://localhost:8900");
+    socket.current.on("someoneLetTyping", (data) => {
+      const getNonReadMessages = async () => {
+        const nonReadMessagesFromDb = await axios.get(
+          "/messages/noRead/" + currentUser._id
+        );
+        setUnreadMessages(nonReadMessagesFromDb.data);
+        console.log("hola", unreadMessages);
+      };
+      getNonReadMessages();
+    });
+  }, []);
 
   return (
     <div className="imgAndUsernameContacts">
@@ -36,6 +55,13 @@ export default function Conversation({ conversation, currentUser }) {
       <div className="nameAndStatus">
         <typography className="usernameContacts">{user?.username}</typography>
         <typography className="status">Online</typography>
+      </div>
+      <div className="typingOrCountContainer">
+        {currentUser?._id === typing?.userId ? (
+          <div className="typingBadge">typing ...</div>
+        ) : (
+          <div className="unreadMessagesCount">{unreadMessages.length}</div>
+        )}
       </div>
     </div>
   );

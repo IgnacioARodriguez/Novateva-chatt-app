@@ -10,6 +10,7 @@ import { io } from "socket.io-client";
 import { UserContext } from "../../context/UserState/UserContext";
 import Sidebar from "../../components/sidebar/sidebar";
 import ContactsBar from "../../components/contactsBar/ContactsBar";
+import { TypingContext } from "../../context/TypingContext/TypingContext";
 
 export default function Messenger() {
   const [conversations, setConversations] = useState([]);
@@ -18,20 +19,21 @@ export default function Messenger() {
   const [newMessage, setNewMessage] = useState("");
   const [usersList, setUsersList] = useState([]);
   const [arrivalMessage, setArrivalMessage] = useState(null);
+  // const [typing, setTyping] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
   const socket = useRef();
   const { user } = useContext(AuthContext);
   const { conversation } = useContext(UserContext);
+  const { dispatch } = useContext(TypingContext);
+  const { typing } = useContext(TypingContext);
   const scrollRef = useRef();
 
   useEffect(() => {
     const getUsersList = async () => {
       const usersListFromDb = await axios.get("users/list");
       setUsersList([usersListFromDb.data]);
-      console.log("userListFromDb", usersListFromDb.data);
     };
     getUsersList();
-    console.log("hola", conversation);
   }, [conversation]);
 
   useEffect(() => {
@@ -64,9 +66,6 @@ export default function Messenger() {
       setOnlineUsers(
         usersList.filter((f) => users.some((u) => u.userId === f))
       );
-      console.log("userlist", usersList);
-      console.log("usersocket", users);
-      console.log("online users", onlineUsers);
     });
   }, [user]);
 
@@ -95,23 +94,24 @@ export default function Messenger() {
     getMessages();
   }, [currentChat]);
 
+  const receiverId = currentChat?.members.find((member) => member !== user._id);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const message = {
       sender: user._id,
       text: newMessage,
+      receiver: receiverId,
       conversationId: currentChat._id,
     };
 
-    const receiverId = currentChat.members.find(
-      (member) => member !== user._id
-    );
-
     socket.current.emit("sendMessage", {
       senderId: user._id,
-      receiverId,
+      receiverId: receiverId,
       text: newMessage,
     });
+
+    socket.current.emit("notTyping", {});
 
     try {
       const res = await axios.post("/messages", message);
@@ -125,6 +125,26 @@ export default function Messenger() {
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  useEffect(() => {
+    socket.current.on("someoneTyping", (userTyping) => {
+      const isTyping = async () => {
+        await dispatch({
+          type: "TYPING_SUCCESS",
+          payload: userTyping,
+        });
+      };
+      isTyping();
+    });
+    socket.current.on("someoneLetTyping", () => {
+      const isTyping = async () => {
+        await dispatch({
+          type: "TYPING_STOP",
+        });
+      };
+      isTyping();
+    });
+  }, []);
 
   return (
     <>
@@ -168,7 +188,15 @@ export default function Messenger() {
                 <div className="chatBoxTop">
                   {messages.map((m) => (
                     <div ref={scrollRef}>
-                      <Message message={m} own={m.sender === user._id} />
+                      <Message
+                        message={m}
+                        own={m.sender === user._id}
+                        elses={
+                          currentChat.members[0] === user._id
+                            ? currentChat.members[1]
+                            : currentChat.members[0]
+                        }
+                      />
                     </div>
                   ))}
                 </div>
@@ -177,8 +205,28 @@ export default function Messenger() {
                     <div className="messengerInputContainer">
                       <input
                         className="chatMessageInput"
-                        // placeholder="write something..."
-                        onChange={(e) => setNewMessage(e.target.value)}
+                        placeholder="Start typing here"
+                        onChange={(e) => {
+                          if (e.target.value === "") {
+                            socket.current.emit("notTyping", {});
+                          }
+                          if (
+                            e.target.value !== "" &&
+                            user._id === currentChat.members[0]
+                          ) {
+                            socket.current.emit("typing", {
+                              userId: currentChat.members[1],
+                            });
+                          } else if (
+                            e.target.value !== "" &&
+                            user._id === currentChat.members[1]
+                          ) {
+                            socket.current.emit("typing", {
+                              userId: currentChat.members[0],
+                            });
+                          }
+                          setNewMessage(e.target.value);
+                        }}
                         value={newMessage}
                         onSubmit={handleSubmit}
                       />
