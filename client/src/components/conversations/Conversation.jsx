@@ -33,10 +33,19 @@ export default function Conversation({ conversation, currentUser }) {
           "/messages/noRead/" + currentUser._id
         );
         setUnreadMessages(nonReadMessagesFromDb.data);
-        console.log("hola", unreadMessages);
       };
       getNonReadMessages();
     });
+  }, []);
+
+  useEffect(() => {
+    const getNonReadMessages = async () => {
+      const nonReadMessagesFromDb = await axios.get(
+        "/messages/noRead/" + currentUser._id
+      );
+      setUnreadMessages(nonReadMessagesFromDb.data);
+    };
+    getNonReadMessages();
   }, []);
 
   return (

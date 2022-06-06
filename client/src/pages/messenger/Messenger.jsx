@@ -80,6 +80,7 @@ export default function Messenger() {
     };
     getConversations();
     setCurrentChat(conversation);
+    console.log(conversation)
   }, [user._id, conversation]);
 
   useEffect(() => {
@@ -179,6 +180,9 @@ export default function Messenger() {
                 </div>
               ))}
             </div>
+          </div>
+          <div>
+            <button className="newChatButton">New chat</button>
           </div>
         </div>
         <div className="chatBox">

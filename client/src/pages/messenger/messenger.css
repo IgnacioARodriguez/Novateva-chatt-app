@@ -73,12 +73,36 @@
 .chatBox {
   flex: 5.5;
   width: 874px;
+  margin-right: 18px;
+  margin-top: 18px;
   border-left: solid 2px #f0f0f0;
+  border: solid 2px #f0f0f0;
+  height: 815px;
+  border-bottom-right-radius: 10px;
+  border-top-right-radius: 10px;
+  border-left: transparent;
 }
 
 .ContactsChatContainer {
   width: 301px;
   border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  margin-top: 18px;
+  margin-left: 18px;
+  height: 815px;
+  border: solid 2px #f0f0f0;
+}
+
+.newChatButton {
+  width: 153.91px;
+  height: 47.97px;
+  border: none;
+  /* 4 */
+  background: linear-gradient(178.18deg, #fd749b -13.56%, #281ac8 158.3%);
+  border-radius: 100px;
+  color: #ffffff;
+  margin-bottom: 27px;
+  margin-left: 70px;
 }
 
 .chatBoxWrapper {

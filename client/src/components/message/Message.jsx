@@ -7,7 +7,6 @@ export default function Message({ message, own, elses }) {
   const [colleage, setColleage] = useState(null);
 
   useEffect(() => {
-    console.log(elses);
     const getColleage = async () => {
       try {
         const colleage = await axios.get(`/users/?userId=${elses}`);

@@ -3,6 +3,7 @@ const app = express();
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const helmet = require("helmet");
+const cors = require("cors")
 const morgan = require("morgan");
 const multer = require("multer");
 const userRoute = require("./routes/users");
@@ -30,6 +31,7 @@ app.use("/images", express.static(path.join(__dirname, "public/images")));
 //middleware
 app.use(express.json());
 app.use(helmet());
+app.options('*', cors())
 app.use(morgan("common"));
 
 const storage = multer.diskStorage({

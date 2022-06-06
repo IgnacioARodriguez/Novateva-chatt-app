@@ -1,7 +1,6 @@
 import "./sidebar.css";
 import axios from "axios";
 import QuestionAnswerOutlinedIcon from "@mui/icons-material/QuestionAnswerOutlined";
-import SettingsInputComponentIcon from "@mui/icons-material/SettingsInputComponent";
 import { useContext, useEffect, useRef, useState } from "react";
 import { Typography } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -23,17 +22,6 @@ export default function Sidebar() {
     window.location.reload();
   };
 
-  // useEffect(() => {
-  //   const getNonReadMessages = async () => {
-  //     const nonReadMessagesFromDb = await axios.get(
-  //       "/messages/noRead/" + user._id
-  //     );
-  //     setUnreadMessages(nonReadMessagesFromDb.data);
-  //     console.log("hola", unreadMessages);
-  //   };
-  //   setInterval(getNonReadMessages, 1000);
-  // }, []);
-
   useEffect(() => {
     socket.current = io("ws://localhost:8900");
     socket.current.on("someoneLetTyping", (data) => {
@@ -42,10 +30,19 @@ export default function Sidebar() {
           "/messages/noRead/" + user._id
         );
         setUnreadMessages(nonReadMessagesFromDb.data);
-        console.log("hola", unreadMessages);
       };
       getNonReadMessages();
     });
+  }, []);
+
+  useEffect(() => {
+    const getNonReadMessages = async () => {
+      const nonReadMessagesFromDb = await axios.get(
+        "/messages/noRead/" + user._id
+      );
+      setUnreadMessages(nonReadMessagesFromDb.data);
+    };
+    getNonReadMessages();
   }, []);
 
   return (

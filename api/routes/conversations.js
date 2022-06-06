@@ -16,14 +16,13 @@ router.post("/", async (req, res) => {
         "/" +
         req.body.receiverId
     );
-    console.log(conversationExists.data);
+    console.log('esto es null', conversationExists.data);
     if (conversationExists !== null) {
       const savedConversation = await newConversation.save();
       res.status(200).json(savedConversation);
-    } else {
-      throw error;
     }
   } catch (err) {
+    console.log(err)
     res.status(500).json(err);
   }
 });

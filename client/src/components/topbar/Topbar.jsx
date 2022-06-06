@@ -27,10 +27,6 @@ export default function Topbar() {
       const userSearched = await axios.get(
         "/users/?username=" + usernameSearched
       );
-      // const newConversation = await axios.post("/conversations", {
-      //   senderId: user._id,
-      //   receiverId: userSearched.data._id,
-      // });
       await createConversationCall(user._id, userSearched.data._id, dispatch);
     } catch (e) {
       console.log("user not found");
