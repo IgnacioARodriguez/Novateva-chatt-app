@@ -3,50 +3,29 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
 import { TypingContext } from "../../context/TypingContext/TypingContext";
 import "./conversation.css";
+import { getContact, getNonReadMessages } from "./conversationHelper";
 
 export default function Conversation({ conversation, currentUser }) {
-  const [user, setUser] = useState(null);
+  const [contact, setContact] = useState(null);
   const [unreadMessages, setUnreadMessages] = useState([]);
+  const [userTyping, setUserTyping] = useState([]);
   const { typing } = useContext(TypingContext);
   const socket = useRef();
-  const PF = process.env.REACT_APP_PUBLIC_FOLDER;
 
   useEffect(() => {
-    const friendId = conversation.members.find((m) => m !== currentUser._id);
-
-    const getUser = async () => {
-      try {
-        const res = await axios("/users?userId=" + friendId);
-        setUser(res.data);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    getUser();
-  }, [currentUser, conversation, typing]);
+    getContact(currentUser, setContact, conversation);
+  }, [currentUser, conversation]);
 
   useEffect(() => {
     socket.current = io("ws://localhost:8900");
     socket.current.on("someoneLetTyping", (data) => {
-      const getNonReadMessages = async () => {
-        const nonReadMessagesFromDb = await axios.get(
-          "/messages/noRead/" + currentUser._id
-        );
-        setUnreadMessages(nonReadMessagesFromDb.data);
-      };
-      getNonReadMessages();
+      getNonReadMessages(currentUser, contact, setUnreadMessages);
     });
   }, []);
 
   useEffect(() => {
-    const getNonReadMessages = async () => {
-      const nonReadMessagesFromDb = await axios.get(
-        "/messages/noRead/" + currentUser._id
-      );
-      setUnreadMessages(nonReadMessagesFromDb.data);
-    };
-    getNonReadMessages();
-  }, []);
+    getNonReadMessages(currentUser, contact, setUnreadMessages);
+  }, [contact]);
 
   return (
     <div className="imgAndUsernameContacts">
@@ -62,13 +41,15 @@ export default function Conversation({ conversation, currentUser }) {
       />
       <div className="connectedBadge"></div>
       <div className="nameAndStatus">
-        <typography className="usernameContacts">{user?.username}</typography>
+        <typography className="usernameContacts">
+          {contact?.username}
+        </typography>
         <typography className="status">Online</typography>
       </div>
       <div className="typingOrCountContainer">
-        {currentUser?._id === typing?.userId ? (
+        {contact?._id === typing?.userId ? (
           <div className="typingBadge">typing ...</div>
-        ) : (
+        ) : unreadMessages.length === 0 ? null : (
           <div className="unreadMessagesCount">{unreadMessages.length}</div>
         )}
       </div>

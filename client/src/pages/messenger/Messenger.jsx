@@ -2,15 +2,13 @@ import "./messenger.css";
 import Topbar from "../../components/topbar/Topbar";
 import Conversation from "../../components/conversations/Conversation";
 import Message from "../../components/message/Message";
-import ChatOnline from "../../components/chatOnline/ChatOnline";
 import { useContext, useEffect, useRef, useState } from "react";
 import { AuthContext } from "../../context/AuthState/AuthContext";
 import axios from "axios";
 import { io } from "socket.io-client";
 import { UserContext } from "../../context/UserState/UserContext";
 import Sidebar from "../../components/sidebar/sidebar";
-import ContactsBar from "../../components/contactsBar/ContactsBar";
-import { TypingContext } from "../../context/TypingContext/TypingContext";
+import { getConversations, getMessages, getUsersList } from "./messengerHelper";
 
 export default function Messenger() {
   const [conversations, setConversations] = useState([]);
@@ -19,22 +17,11 @@ export default function Messenger() {
   const [newMessage, setNewMessage] = useState("");
   const [usersList, setUsersList] = useState([]);
   const [arrivalMessage, setArrivalMessage] = useState(null);
-  // const [typing, setTyping] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
   const socket = useRef();
   const { user } = useContext(AuthContext);
   const { conversation } = useContext(UserContext);
-  const { dispatch } = useContext(TypingContext);
-  const { typing } = useContext(TypingContext);
   const scrollRef = useRef();
-
-  useEffect(() => {
-    const getUsersList = async () => {
-      const usersListFromDb = await axios.get("users/list");
-      setUsersList([usersListFromDb.data]);
-    };
-    getUsersList();
-  }, [conversation]);
 
   useEffect(() => {
     socket.current = io("ws://localhost:8900");
@@ -70,35 +57,23 @@ export default function Messenger() {
   }, [user]);
 
   useEffect(() => {
-    const getConversations = async () => {
-      try {
-        const res = await axios.get("/conversations/" + user._id);
-        setConversations(res.data);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    getConversations();
-    setCurrentChat(conversation);
-    console.log(conversation)
+    getConversations(setConversations, user);
+    getUsersList(setUsersList);
   }, [user._id, conversation]);
 
   useEffect(() => {
-    const getMessages = async () => {
-      try {
-        const res = await axios.get("/messages/" + currentChat?._id);
-        setMessages(res.data);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    getMessages();
+    getMessages(currentChat, setMessages);
   }, [currentChat]);
 
-  const receiverId = currentChat?.members.find((member) => member !== user._id);
+  useEffect(() => {
+    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const receiverId = currentChat?.members.find(
+      (member) => member !== user._id
+    );
     const message = {
       sender: user._id,
       text: newMessage,
@@ -112,7 +87,7 @@ export default function Messenger() {
       text: newMessage,
     });
 
-    socket.current.emit("notTyping", {});
+    socket.current.emit("notTyping", { userId: user._id });
 
     try {
       const res = await axios.post("/messages", message);
@@ -122,30 +97,6 @@ export default function Messenger() {
       console.log(err);
     }
   };
-
-  useEffect(() => {
-    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
-
-  useEffect(() => {
-    socket.current.on("someoneTyping", (userTyping) => {
-      const isTyping = async () => {
-        await dispatch({
-          type: "TYPING_SUCCESS",
-          payload: userTyping,
-        });
-      };
-      isTyping();
-    });
-    socket.current.on("someoneLetTyping", () => {
-      const isTyping = async () => {
-        await dispatch({
-          type: "TYPING_STOP",
-        });
-      };
-      isTyping();
-    });
-  }, []);
 
   return (
     <>
@@ -213,21 +164,17 @@ export default function Messenger() {
                         onChange={(e) => {
                           if (e.target.value === "") {
                             socket.current.emit("notTyping", {});
-                          }
-                          if (
-                            e.target.value !== "" &&
-                            user._id === currentChat.members[0]
-                          ) {
+                          } else {
                             socket.current.emit("typing", {
-                              userId: currentChat.members[1],
+                              userId: user._id,
                             });
-                          } else if (
-                            e.target.value !== "" &&
-                            user._id === currentChat.members[1]
-                          ) {
-                            socket.current.emit("typing", {
-                              userId: currentChat.members[0],
-                            });
+                            // } else if (
+                            //   e.target.value !== "" &&
+                            //   user._id === currentChat.members[1]
+                            // ) {
+                            //   socket.current.emit("typing", {
+                            //     userId: currentChat.members[0],
+                            //   });
                           }
                           setNewMessage(e.target.value);
                         }}

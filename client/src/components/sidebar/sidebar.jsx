@@ -2,9 +2,6 @@ import "./sidebar.css";
 import axios from "axios";
 import QuestionAnswerOutlinedIcon from "@mui/icons-material/QuestionAnswerOutlined";
 import { useContext, useEffect, useRef, useState } from "react";
-import { Typography } from "@mui/material";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAtom } from "@fortawesome/free-solid-svg-icons";
 import { AuthContext } from "../../context/AuthState/AuthContext";
 import settingsIcon from "./Group 11.1.png";
 import { io } from "socket.io-client";
@@ -27,7 +24,7 @@ export default function Sidebar() {
     socket.current.on("someoneLetTyping", (data) => {
       const getNonReadMessages = async () => {
         const nonReadMessagesFromDb = await axios.get(
-          "/messages/noRead/" + user._id
+          "/messages/noRead/" + user?._id
         );
         setUnreadMessages(nonReadMessagesFromDb.data);
       };
@@ -38,7 +35,7 @@ export default function Sidebar() {
   useEffect(() => {
     const getNonReadMessages = async () => {
       const nonReadMessagesFromDb = await axios.get(
-        "/messages/noRead/" + user._id
+        "/messages/noRead/" + user?._id
       );
       setUnreadMessages(nonReadMessagesFromDb.data);
     };

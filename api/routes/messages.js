@@ -27,16 +27,30 @@ router.get("/:conversationId", async (req, res) => {
   }
 });
 
-router.get("/noRead/:userId", async (req, res) => {
+router.get("/noRead/:receiverId/:senderId", async (req, res) => {
   try {
     const messages = await Message.find({
       read: false,
-      receiver: req.params.userId,
+      receiver: req.params.receiverId,
+      sender: req.params.senderId,
     });
     res.status(200).json(messages);
   } catch (err) {
     res.status(500).json(err);
   }
 });
+
+router.get("/noRead/:receiverId", async (req, res) => {
+  try {
+    const messages = await Message.find({
+      read: false,
+      receiver: req.params.receiverId,
+    });
+    res.status(200).json(messages);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
 
 module.exports = router;
